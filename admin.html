@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | Lucia</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+</head>
+<body class="admin-layout">
+
+    <!-- Menú Lateral (Sidebar) -->
+    <aside class="sidebar">
+        <h2>Panel Admin</h2>
+        <ul>
+            <li><a href="admin.html" style="background: var(--bg-color);">Productos & Stock</a></li>
+            <li><a href="index.html">⬅ Ver Tienda</a></li>
+            <br>
+            <li><a href="#" id="btn-cerrar-sesion" style="color: #ef4444;">Cerrar Sesión</a></li>
+        </ul>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="admin-header">
+            <h2>Gestión de Negocio</h2>
+        </div>
+
+        <!-- TARJETAS DE ESTADÍSTICAS (DASHBOARD) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px;">
+            <div style="background: var(--surface); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+                <p style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; margin-bottom: 8px;">Total de Prendas</p>
+                <h3 id="stat-total-productos" style="font-size: 1.8rem; font-weight: 700;">0</h3>
+            </div>
+            <div style="background: var(--surface); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+                <p style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; margin-bottom: 8px;">Valor Total Stock</p>
+                <h3 style="font-size: 1.8rem; font-weight: 700;">$<span id="stat-valor-stock">0</span></h3>
+            </div>
+        </div>
+
+        <!-- Formulario para Agregar Producto -->
+        <div style="background: var(--surface); padding: 30px; border-radius: var(--radius); border: 1px solid var(--border-color); margin-bottom: 40px;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 20px;">Publicar Nueva Prenda</h3>
+            <form id="form-nuevo-producto" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Nombre de la prenda</label>
+                    <input type="text" id="nombre-prod" required placeholder="Ej: Trench Minimalista" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; background: var(--bg-color);">
+                </div>
+                <div style="flex: 1; min-width: 150px;">
+                    <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Precio ($ ARS)</label>
+                    <input type="number" id="precio-prod" required placeholder="45000" style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; background: var(--bg-color);">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Foto (Examinar)</label>
+                    <input type="file" id="imagen-prod" accept="image/*" required style="width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; background: var(--bg-color); font-size: 0.85rem;">
+                </div>
+                <button type="submit" class="btn" style="height: 44px;">Subir Prenda</button>
+            </form>
+        </div>
+
+        <!-- Tabla de Productos -->
+        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 15px;">Inventario Actual</h3>
+        <table class="tabla-admin" style="margin-bottom: 40px;">
+            <thead>
+                <tr>
+                    <th>Prenda</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-admin-body">
+                <!-- Se llena dinámicamente -->
+            </tbody>
+        </table>
+
+        <!-- SECCIÓN DE PEDIDOS RECIENTES DE CLIENTES -->
+        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 15px;">Historial de Ventas / Pedidos Recientes</h3>
+        <table class="tabla-admin">
+            <thead>
+                <tr>
+                    <th>Nro de Orden</th>
+                    <th>Detalle de Compra</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-pedidos-body">
+                <!-- Se llena dinámicamente -->
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Notificación Toast -->
+    <div id="toast-notification">¡Acción realizada con éxito!</div>
+
+    <script>
+        // Seguridad estricta de sesión
+        if (localStorage.getItem('admin_logueado') !== 'true') {
+            window.location.href = "login.html";
+        }
+
+        document.getElementById('btn-cerrar-sesion').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('admin_logueado');
+            window.location.href = "login.html";
+        });
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
